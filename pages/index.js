@@ -1,10 +1,26 @@
-// pages/index.js
 import { useState, useEffect, useReducer, useRef } from 'react';
 import { io } from 'socket.io-client';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { parseCookies } from '../utils/cookies';
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
+// Cette fonction doit être exportée en dehors du reducer et du composant React
+export async function getServerSideProps(context) {
+  const cookies = parseCookies(context.req);
+  let discordProfile = null;
+  if (cookies.discord_profile) {
+    try {
+      discordProfile = JSON.parse(decodeURIComponent(cookies.discord_profile));
+    } catch (e) {}
+  }
+  return {
+    props: {
+      isDiscordAuth: cookies.discord_auth === '1',
+      discordProfile
+    }
+  };
+}
 
 // Types d'actions pour le reducer
 const ACTIONS = {
@@ -52,33 +68,11 @@ function appReducer(state, action) {
           doctorId => doctorId !== action.payload
         );
       });
-      
       return {
         ...state,
         doctors: state.doctors.filter(doctor => doctor.id !== action.payload),
         assignments: newAssignmentsAfterDelete
       };
-    
-    case ACTIONS.ADD_LOCATION:
-      const newLocation = {
-        id: Date.now(),
-        name: action.payload.name,
-        type: action.payload.type
-      };
-      return {
-        ...state,
-        locations: [...state.locations, newLocation],
-        assignments: { ...state.assignments, [newLocation.id]: [] }
-      };
-    
-    case ACTIONS.UPDATE_LOCATION:
-      return {
-        ...state,
-        locations: state.locations.map(location => 
-          location.id === action.payload.id ? { ...location, ...action.payload } : location
-        )
-      };
-    
     case ACTIONS.DELETE_LOCATION:
       const { [action.payload]: removed, ...remainingAssignments } = state.assignments;
       return {
@@ -228,7 +222,17 @@ const LocationDropZone = ({ location, doctors, assignments, onDoctorDropped, onR
 };
 
 // Composant principal
-export default function Home() {
+export default function Home({ isDiscordAuth, discordProfile }) {
+  const [nickname, setNickname] = useState(null);
+
+  useEffect(() => {
+    if (isDiscordAuth && discordProfile?.id) {
+      fetch(`/api/discord/nickname?userId=${discordProfile.id}`)
+        .then(res => res.json())
+        .then(data => setNickname(data.nickname));
+    }
+  }, [isDiscordAuth, discordProfile]);
+
   const [state, dispatch] = useReducer(appReducer, {
     doctors: [],
     locations: [],
@@ -345,6 +349,32 @@ export default function Home() {
     }
   };
 
+
+  if (!isDiscordAuth) {
+    return (
+      <div className={styles.container}>
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
+          <a
+            href="/api/auth/discord"
+            style={{
+              display: 'inline-block',
+              padding: '16px 32px',
+              background: '#5865F2',
+              color: '#fff',
+              borderRadius: '8px',
+              textDecoration: 'none',
+              fontWeight: 'bold',
+              fontSize: '1.2rem',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+            }}
+          >
+            Se connecter avec Discord
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <DndProvider backend={HTML5Backend}>
       <Head>
@@ -353,6 +383,34 @@ export default function Home() {
         <meta name="description" content="Système de gestion des médecins" />
       </Head>
       <div className={styles.container}>
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '20px' }}>
+          {discordProfile ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', background: '#1c1f2e', padding: '8px 16px', borderRadius: '8px' }}>
+              <img
+                src={`https://cdn.discordapp.com/avatars/${discordProfile.id}/${discordProfile.avatar}.png`}
+                alt={discordProfile.username}
+                style={{ width: '32px', height: '32px', borderRadius: '50%' }}
+              />
+              <span style={{ color: '#fff', fontWeight: 'bold' }}>{nickname || discordProfile.username}</span>
+            </div>
+          ) : (
+            <a
+              href="/api/auth/discord"
+              style={{
+                display: 'inline-block',
+                padding: '10px 20px',
+                background: '#5865F2',
+                color: '#fff',
+                borderRadius: '5px',
+                textDecoration: 'none',
+                fontWeight: 'bold',
+                marginTop: '10px',
+              }}
+            >
+              Se connecter avec Discord
+            </a>
+          )}
+        </div>
         <h1 className="h1">Gestion des Médecins</h1>
 
         <div className={styles.managementSection}>
