@@ -1,3 +1,5 @@
+# Données sensibles
+server/data.json
 node_modules
 .next
-server/data.json
+.env
