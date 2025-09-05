@@ -72,7 +72,62 @@ export default async function handler(req, res) {
   } else {
     // Non membre
   res.setHeader('Set-Cookie', `discord_auth=0; Path=/; SameSite=Lax`);
-    res.status(403).send('Vous devez être membre du serveur Discord pour accéder à cette page.');
+    res.status(403).send(`
+      <html>
+        <head>
+          <meta charset="UTF-8" />
+          <title>Accès refusé - Dispatch LSMS</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <style>
+            body {
+              background: #181c2f;
+              color: #fff;
+              font-family: 'Segoe UI', Arial, sans-serif;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              justify-content: center;
+              height: 100vh;
+              margin: 0;
+            }
+            .card {
+              background: #23284a;
+              border-radius: 12px;
+              box-shadow: 0 4px 24px #0006;
+              padding: 40px 32px;
+              text-align: center;
+              max-width: 400px;
+            }
+            h1 {
+              color: #ff5c5c;
+              margin-bottom: 16px;
+            }
+            .btn {
+              margin-top: 24px;
+              background: #5865F2;
+              color: #fff;
+              border: none;
+              border-radius: 6px;
+              padding: 12px 28px;
+              font-size: 1rem;
+              font-weight: bold;
+              cursor: pointer;
+              transition: background 0.2s;
+            }
+            .btn:hover {
+              background: #4752c4;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="card">
+            <h1>Accès refusé</h1>
+            <p>Vous devez être membre de l'intranet pour accéder à cette page.</p>
+            <a href="/api/auth/discord" class="btn">Se connecter avec un autre compte</a>
+          </div>
+        </body>
+      </html>
+    `);
     return;
   }
 }

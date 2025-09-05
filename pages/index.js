@@ -411,7 +411,7 @@ export default function Home({ isDiscordAuth, discordProfile }) {
             </a>
           )}
         </div>
-        <h1 className="h1">Gestion des Médecins</h1>
+        <h1 className="h1">Dispatch LSMS🧑‍⚕️</h1>
 
         <div className={styles.managementSection}>
           <div className={styles.section}>
@@ -441,7 +441,7 @@ export default function Home({ isDiscordAuth, discordProfile }) {
 
             
             <div className={styles.doctorsList}>
-              <h3>Liste des Médecins</h3>
+              <h3>Liste des Médecins 🧑‍⚕️</h3>
               {state.doctors
                 .filter(doctor => 
                   !Object.values(state.assignments).flat().includes(doctor.id)
@@ -512,12 +512,12 @@ export default function Home({ isDiscordAuth, discordProfile }) {
                       onChange={(e) => setEditingDoctor({...editingDoctor, specialty: e.target.value})}
                     >
                       <option value="">Sélectionner un grade</option>
-                      <option value="stagiaire">Stagiaire</option>
-                      <option value="interne">Interne</option>
-                      <option value="medecin">Médecin</option>
-                      <option value="medecin-chef">Médecin Chef</option>
-                      <option value="directeur-adjoint">Directeur Adjoint</option>
-                      <option value="directeur">Directeur</option>
+                      <option value="Stagiaire">Stagiaire</option>
+                      <option value="Interne">Interne</option>
+                      <option value="Médecin">Médecin</option>
+                      <option value="Médecin-chef">Médecin Chef</option>
+                      <option value="Directeur-adjoint">Directeur Adjoint</option>
+                      <option value="Directeur">Directeur</option>
                     </select>
                   </div>
                   <div className={styles.modalActions}>
@@ -594,10 +594,10 @@ export default function Home({ isDiscordAuth, discordProfile }) {
                       onChange={(e) => setEditingLocation({...editingLocation, type: e.target.value})}
                     >
                       <option value="">Sélectionner un type</option>
-                      <option value="repos">Repos</option>
-                      <option value="intervention">Intervention</option>
-                      <option value="absent">Absent</option>
-                      <option value="other">Autre</option>
+                      <option value="Repos">Repos</option>
+                      <option value="Intervention">Intervention</option>
+                      <option value="Absent">Absent</option>
+                      <option value="Autre">Autre</option>
                     </select>
                   </div>
                   <div className={styles.modalActions}>
@@ -626,7 +626,7 @@ export default function Home({ isDiscordAuth, discordProfile }) {
           </div>
           
           <div className={styles.section}>
-            <h2>Gestion des Lieux</h2>
+            <h2>Gestion des Lieux 🏥</h2>
             <div className={styles.form}>
               <input
                 type="text"
@@ -665,7 +665,7 @@ export default function Home({ isDiscordAuth, discordProfile }) {
         </div>
         
         <div className={styles.dispatchSection}>
-          <h2>Affectation des Médecins</h2>
+          <h2>Affectation des Médecins 🚑</h2>
           <div className={styles.locationsGrid}>
             {state.locations.map(location => (
               <LocationDropZone
