@@ -350,10 +350,9 @@ export default function Home({ isDiscordAuth, discordProfile }) {
   };
 
 
-  if (!isDiscordAuth) {
-    return (
-      <div className={styles.container}>
-        <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '40px' }}>
+    if (!isDiscordAuth) {
+      return (
+        <div className={styles.container} style={{ minHeight: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <a
             href="/api/auth/discord"
             style={{
@@ -371,9 +370,8 @@ export default function Home({ isDiscordAuth, discordProfile }) {
             Se connecter avec Discord
           </a>
         </div>
-      </div>
-    );
-  }
+      );
+    }
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -394,21 +392,7 @@ export default function Home({ isDiscordAuth, discordProfile }) {
               <span style={{ color: '#fff', fontWeight: 'bold' }}>{nickname || discordProfile.username}</span>
             </div>
           ) : (
-            <a
-              href="/api/auth/discord"
-              style={{
-                display: 'inline-block',
-                padding: '10px 20px',
-                background: '#5865F2',
-                color: '#fff',
-                borderRadius: '5px',
-                textDecoration: 'none',
-                fontWeight: 'bold',
-                marginTop: '10px',
-              }}
-            >
-              Se connecter avec Discord
-            </a>
+            <span>Chargement...</span>
           )}
         </div>
         <h1 className="h1">Dispatch LSMS🧑‍⚕️</h1>
@@ -437,9 +421,7 @@ export default function Home({ isDiscordAuth, discordProfile }) {
               </select>
               <button onClick={handleAddDoctor}>Ajouter</button>
             </div>
-            
-
-            
+                        
             <div className={styles.doctorsList}>
               <h3>Liste des Médecins 🧑‍⚕️</h3>
               {state.doctors
